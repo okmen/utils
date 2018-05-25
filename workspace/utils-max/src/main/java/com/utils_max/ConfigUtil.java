@@ -23,6 +23,7 @@ public class ConfigUtil {
 		ResourceBundle bundle = ResourceBundle.getBundle("commons");// 获取当前的域名
 		if (bundle.containsKey(key))
 			return bundle.getString(key);
+		
 		return null;
 	}
 	
