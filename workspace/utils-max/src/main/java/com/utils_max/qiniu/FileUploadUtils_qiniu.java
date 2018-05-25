@@ -143,7 +143,8 @@ public class FileUploadUtils_qiniu {
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-		return null;
+		return null; 
+		
 
 	}
 	
