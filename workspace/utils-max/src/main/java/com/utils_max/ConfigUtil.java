@@ -3,6 +3,7 @@ package com.utils_max;
 import java.util.ResourceBundle;
 
 //No1 第一次修改
+//No2 第二此 修改
 /**
  * 获取配置信息 配置文件 config.xml
  * 
