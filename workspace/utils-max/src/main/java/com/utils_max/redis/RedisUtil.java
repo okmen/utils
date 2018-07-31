@@ -1,5 +1,7 @@
 package com.utils_max.redis;
 
+import java.util.HashMap;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -134,6 +136,48 @@ public class RedisUtil {
 				returnResource(jedis);
 		}
 	}
+	/**
+	 * hashMap 保存
+	 * @author lvxl
+	 * @date:   2018年7月31日
+	 * @Desc :
+	 * @param key
+	 * @param value
+	 */
+	public static void hmset(String key,HashMap<String, String> value){
+		if(value!=null){
+			Jedis jedis = getJedis();
+			try{
+				jedis.hmset(key, value);
+			}catch(Exception e){
+				
+			}finally {
+				if (jedis != null)
+					returnResource(jedis);
+			}
+		}
+	}
+	/**
+	 * hashMap 取某个hash表的某个字段
+	 * @author lvxl
+	 * @date:   2018年7月31日
+	 * @Desc :
+	 * @param key
+	 * @param field
+	 * @return
+	 */
+	public static String  hmget(String key,String field){
+		Jedis jedis = getJedis();
+		try {
+			return jedis.hget(key, field);
+		} catch (Exception e) {
+			return null;
+		} finally {
+			if (jedis != null)
+				returnResource(jedis);
+		}
+	}
+	
 
 	/**
 	 * 
@@ -151,7 +195,7 @@ public class RedisUtil {
 		try {
 			jedis.setex(key, seconds, value);
 		} catch (Exception e) {
-			// logger.error("setString(key,seconds,value) error : " + e);
+			
 		} finally {
 			if (jedis != null)
 				returnResource(jedis);
@@ -225,7 +269,6 @@ public class RedisUtil {
 		Jedis jedis = getJedis();
 		try {
 			jedis.set(key.getBytes(), SerializeUtil.serialize(value));
-			
 		} catch (Exception e) {
 			// logger.error("setObject(byte,value) error : " + e);
 		} finally {
@@ -261,7 +304,7 @@ public class RedisUtil {
 		}
 	}
 
-	public static Long delete(String key) {
+	public static Long delete(String... key) {
 		Jedis jedis = getJedis();
 		try {
 			return jedis.del(key);
@@ -274,7 +317,7 @@ public class RedisUtil {
 		}
 	}
 
-	public static Long delete(byte[] key) {
+	public static Long delete(byte[]... key) {
 		Jedis jedis = getJedis();
 		try {
 			return jedis.del(key);
@@ -294,15 +337,13 @@ public class RedisUtil {
 			try {
 				byte[] object = jedis.get(key.getBytes());
 				obj = (Object) SerializeUtil.unserialize(object);
+				if (obj != null)
+					jedis.expire(key.getBytes(), secondes);
 			} catch (Exception e) {
 				obj = null;
 			}
-			if (obj != null)
-				jedis.expire(key.getBytes(), secondes);
 		} catch (Exception e) {
-			// logger.error("setExpire(key) error : " + e);
 		}
-		// 释放连接
 		finally {
 			if (jedis != null)
 				returnResource(jedis);
@@ -312,8 +353,12 @@ public class RedisUtil {
 	public static void setExpire(byte[] key, int secondes) {
 		Jedis jedis = getJedis();
 		try {
-			if (key != null)
-				jedis.expire(key, secondes);
+			if (key != null){
+				byte[] object = jedis.get(key);
+				if(object!=null){
+					jedis.expire(key, secondes);
+				}
+			}
 		} catch (Exception e) {
 			// logger.error("setExpire(key) error : " + e);
 		}
