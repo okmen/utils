@@ -52,7 +52,6 @@ public class FileUploadUtils_qiniu {
 		return getUpTokenCommon(bucketName, null);
 	}
 
-	
 
 	/**
 	 * 获取uploadToken 缓存半小时
